@@ -6,7 +6,7 @@ require('dotenv').config()
 const decodeToken = async (token) => {
   const userId = await jwt.verify(
       token,
-      process.env.JWT_SECRET,
+      process.env.SECRET,
       async (err, decoded) => {
         if (decoded === "undefined" || !decoded || err) return false;
         let uuid = decoded.uuid
