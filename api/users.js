@@ -1,44 +1,17 @@
 const express = require('express');
+const authHandler = require('../middleware/authHandler');
+const db = require('../models');
 const app = express.Router()
 
-app.post('/v1/new', async (req, res, next) => {
+app.get('/v1/me', authHandler,async (req, res, next) => {
   try {
-   const {email, password} = req.body
-
-    if (!email || !password) throw new Error("No email or password provided");
-
-    const hashPassword = bcrypt.hashSync(password, 10);
-    const existingUser = await User.findOne({
+    const user = await db.models.User.findOne({
       where: {
-        email,
-      },
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
+        uuid: res.locals.userId
       }
-    });
+    })
 
-    if (existingUser) throw new Error("User already exists");
-
-    const user = await User.create({
-      email,
-      password: hashPassword,
-      access_token,
-      refresh_token,
-      reddit_profile,
-    });
-
-    const token = jwt.sign(
-      { uuid: user.uuid, email: user.email },
-      config.development.secret,
-      {
-       expiresIn: "1w",      }
-    );
-
-    res.status(200).send({
-      token,
-      user,
-    });
+    res.send(user)
   } catch (error) {
     next(error)
   }
