@@ -1,17 +1,14 @@
 const express = require("express");
 const app = express.Router();
-const QRCode = require("qrcode");
+const generateQRCode = require("../libs/generateQRCode");
 app.post("/v1/generate", async (req, res, next) => {
   try {
-    QRCode.toString(
-      "76hU-977h-h8g8hkj-987guk",
-      { type: "terminal" },
-      function (err, url) {
-        console.log(url);
-      }
-    );
+    const {uuid}= req.body
+    const code = generateQRCode(uuid)
+    console.log(code);
+    res.sendStatus(200)
   } catch (error) {
-    console.log(error);
+    next(error)
   }
 });
 
