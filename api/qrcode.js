@@ -1,14 +1,16 @@
 const express = require("express");
-const app = express.Router();
 const generateQRCode = require("../libs/generateQRCode");
-app.post("/v1/generate", async (req, res, next) => {
+const app = express.Router();
+const authHandler = require("../middleware/authHandler");
+
+app.post("/v1/generate", authHandler, async (req, res, next) => {
   try {
-    const {uuid}= req.body
-    const code = generateQRCode(uuid)
-    console.log(code);
-    res.sendStatus(200)
+    const { uuid } = req.body;
+    const qr = await generateQRCode(uuid);
+  
+    res.send({petId: uuid, qr});
   } catch (error) {
-    next(error)
+    next(error);
   }
 });
 

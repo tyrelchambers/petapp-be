@@ -22,7 +22,17 @@ module.exports = (sequelize, DataTypes) => {
 
     },
     name: DataTypes.STRING,
-    breed: DataTypes.STRING
+    breed: DataTypes.STRING,
+    qrCode: DataTypes.TEXT,
+    userId: {
+      type: DataTypes.UUID,
+      references: {
+        model: "Users",
+        key: "uuid",
+        
+      },
+      onDelete: "CASCADE"
+    }
   }, {
     sequelize,
     modelName: 'Pet',
